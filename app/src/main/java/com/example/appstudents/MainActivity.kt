@@ -2,6 +2,7 @@ package com.example.appstudents
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.os.PersistableBundle
 
 import android.view.Menu
 import android.view.MenuInflater
@@ -10,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.example.appstudents.MyConstants.STUDENT_INFO_FRAGMENT_TAG
 import com.example.appstudents.MyConstants.STUDENT_LIST_FRAGMENT_TAG
+import com.example.appstudents.data.Student
 import com.example.appstudents.repository.StudentsRepository
 
 
@@ -32,12 +34,18 @@ class MainActivity : AppCompatActivity() {
         onBackPressedDispatcher.addCallback(this,callback)
     }
 
+
  /*   override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         saveData()
         super.onSaveInstanceState(outState, outPersistentState)
     }
 */
-    /*override fun onRestoreInstanceState(
+    override fun onSaveInstanceState(outState: Bundle)
+    {
+        saveData()
+        super.onSaveInstanceState(outState)
+    }
+    override fun onRestoreInstanceState(
         savedInstanceState: Bundle?,
         persistentState: PersistableBundle?
     ) {
@@ -56,7 +64,7 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         saveData()
         super.onStop()
-    }*/
+    }
 
     private fun checkLogout(){
         AlertDialog.Builder(this)
@@ -80,20 +88,36 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    fun checkDelete(){
-        val s=StudentsRepository.getInstance().student.value?.lastName+" "+
-                StudentsRepository.getInstance().student.value?.firstName+" "+
-                StudentsRepository.getInstance().student.value?.middleName
+    fun checkDelete(student: Student?=StudentsRepository.getInstance().student.value){
+
+        if(student == null) return
+        val s=student.lastName+" "+
+                student.firstName+" "+
+                student.middleName
         AlertDialog.Builder(this)
             .setTitle("УДАЛЕНИЕ!") // заголовок
             .setMessage("Вы действительно хотите удалить студента $s ?") // сообщение
             .setPositiveButton("ДА") { _ , _ ->
-                StudentsRepository.getInstance().deleteStudent()
+                StudentsRepository.getInstance().deleteStudent(student) // ?
             }
             .setNegativeButton("НЕТ", null)
             .setCancelable(true)
             .create()
             .show()
+
+//        val s=StudentsRepository.getInstance().student.value?.lastName+" "+
+//                StudentsRepository.getInstance().student.value?.firstName+" "+
+//                StudentsRepository.getInstance().student.value?.middleName
+//        AlertDialog.Builder(this)
+//            .setTitle("УДАЛЕНИЕ!") // заголовок
+//            .setMessage("Вы действительно хотите удалить студента $s ?") // сообщение
+//            .setPositiveButton("ДА") { _ , _ ->
+//                StudentsRepository.getInstance().deleteStudent()
+//            }
+//            .setNegativeButton("НЕТ", null)
+//            .setCancelable(true)
+//            .create()
+//            .show()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

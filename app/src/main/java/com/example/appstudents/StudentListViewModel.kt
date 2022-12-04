@@ -32,7 +32,10 @@ class StudentListViewModel : ViewModel() {
         Log.d(TAG, "Подписались StudentListViewModel к StudentsRepository")
     }
 
-    fun setStudent(student: Student){
+    public fun setStudent(student: Student){
         StudentsRepository.getInstance().setCurrentStudent(student)
     }
+
+    fun getPosition() : Int =
+        StudentsRepository.getInstance().getPosition()
 }

@@ -77,7 +77,7 @@ class StudentListFragment : Fragment() {
     }
 
     private inner class StudentHolder(view: View)
-        : RecyclerView.ViewHolder(view), View.OnClickListener{
+        : RecyclerView.ViewHolder(view), View.OnClickListener, View.OnLongClickListener{
         private lateinit var student: Student
         private val fioTextView: TextView = itemView.findViewById(R.id.tvFIO)
         private val ageTextView: TextView = itemView.findViewById(R.id.tvAge)
@@ -98,18 +98,30 @@ class StudentListFragment : Fragment() {
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         override fun onClick(v: View?) {
             Log.d(TAG, "StudentHolder onClick")
             studentListViewModel.setStudent(student)
-            studentListRecyclerView.adapter = StudentsListAdapter(studentListViewModel.studentsList.value!!.items)
+//            studentListRecyclerView.adapter = StudentsListAdapter(studentListViewModel.studentsList.value!!.items)
+            updateUI(studentListViewModel.studentsList.value)
+//            (requireActivity() as MainActivity).checkDelete()
+            (requireActivity() as MainActivity).showStudentInfo()
+        }
+
+        override fun onLongClick(v: View?): Boolean {
+            TODO("Not yet implemented")
+            studentListViewModel.setStudent(student)
+            (requireActivity() as MainActivity).checkDelete(student)
+            return true
         }
     }
 
     private fun updateUI(studentsList: StudentsList? = null){
         if (studentsList==null) return
       //  Log.d(TAG, "`StidentListFragment updateUI $studentsList")
+        studentListRecyclerView.layoutManager?.scrollToPosition(studentListViewModel.getPosition())
         studentListRecyclerView.adapter = StudentsListAdapter(studentsList.items)
     }
 

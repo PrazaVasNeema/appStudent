@@ -73,6 +73,16 @@ class StudentsRepository {
     fun getPosition(student: Student): Int = studentsList.value?.items?.indexOfFirst {
         it.id == student.id } ?: -1
 
+    fun getPosition() :Int
+    {
+        if (student.value!=null)
+        {
+            return getPosition(student.value!!)
+        }
+        else
+            return 0
+    }
+
     fun updateStudent(student: Student) {
         val position = getPosition(student)
         if (position < 0) addStudent(student)
